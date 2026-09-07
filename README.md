@@ -15,6 +15,34 @@
 | 상태 저장 | `data/*.json` 로컬 파일 기반 |
 | 음성 기능 | `@discordjs/voice`, ffmpeg, Google TTS API 사용 |
 
+## 소스 검토 기준
+
+이 README는 `src/index.ts`, `src/commands`, `src/features`, `src/utils`, `package.json`, `tsconfig.json`, `.env.example`을 기준으로 다시 작성했습니다. Discord 토큰, 실제 서버 ID, 설치된 `node_modules`, 빌드 산출물은 문서 근거에서 제외했습니다. 테스트 파일은 현재 저장소에서 확인되지 않아 `npm run build` 중심으로 검증 흐름을 정리했습니다.
+
+검토 결과 이 봇은 슬래시 명령어 샘플이 아니라 로스트아크 길드 운영에 필요한 파티 패널, 캐릭터 명단, 숙제 알림, 떠돌이 상인 알림, 아비도스 제작 계산, TTS 음성 출력까지 묶은 Discord 운영 도구입니다. 일부 운영 상태는 `data/*.json` 로컬 파일로 저장됩니다.
+
+## 소스 기준 기능 지도
+
+| 기능 영역 | 확인한 주요 파일 | 실제로 구현된 내용 |
+| --- | --- | --- |
+| 봇 진입점 | `src/index.ts` | Discord 클라이언트 생성, 명령어 등록, ready 이벤트에서 알림/동기화 polling 시작 |
+| 명령어 등록 | `src/commands/ping.ts`, `src/features/*/*-command.ts` | `/ping`, `/party`, `/roster`, `/homework`, `/merchant`, `/abidos`, `/tts` 슬래시 명령어 구성 |
+| 파티 모집 | `src/features/party/party-command.ts`, `src/features/party/party-service.ts` | 파티 패널 생성과 참여 상태 관리 |
+| 숙제 관리 | `src/features/homework/homework-command.ts`, `src/features/homework/homework-service.ts` | 숙제 알림 채널/역할 설정, 주간 리셋/마감 알림, 미리보기 |
+| 떠돌이 상인 | `src/features/merchant/*.ts` | KLOA 데이터 조회, 카드 세트/서버 설정, 감시 채널/역할, 수동 확인과 자동 알림 |
+| 원정대 | `src/features/roster/*.ts` | 캐릭터 목록 조회와 주기적 동기화 |
+| 제작 계산 | `src/features/abidos/*.ts` | 생활 직업/재료 등급/시세 입력 기반 아비도스 제작 계산 |
+| 음성 출력 | `src/features/tts/*.ts` | Google TTS 음성 생성, Discord 음성 채널 입장/퇴장, 느린 재생 옵션 |
+| 공통 유틸 | `src/utils/*.ts` | 로그 출력, 포맷팅, 추적 메시지 정리 |
+
+## 처음 검토할 때 볼 순서
+
+1. `src/index.ts`에서 봇이 시작될 때 어떤 기능이 자동으로 켜지는지 확인합니다.
+2. `src/features/*/*-command.ts`를 보면 사용자가 입력하는 슬래시 명령어 구조가 보입니다.
+3. `src/features/*/*-service.ts`를 보면 명령어 뒤의 실제 처리 로직이 보입니다.
+4. `.env.example`을 보고 Discord 애플리케이션과 길드 설정에 필요한 값을 준비합니다.
+5. `package.json`의 `deploy:commands`, `dev`, `build`, `start` 순서로 배포 흐름을 확인합니다.
+
 ## 봇 사용 흐름
 
 1. Discord Developer Portal에서 애플리케이션과 봇을 생성합니다.
