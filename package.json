@@ -1,0 +1,33 @@
+{
+  "name": "custom-discord-bot",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Modular Discord bot starter for Lost Ark merchant tracking and TTS",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "deploy:commands": "tsx src/deploy-commands.ts"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "dependencies": {
+    "@discordjs/voice": "^0.19.2",
+    "discord.js": "^14.26.4",
+    "dotenv": "^17.4.2",
+    "ffmpeg-static": "^5.3.0",
+    "google-tts-api": "^2.0.2",
+    "opusscript": "^0.0.8",
+    "prism-media": "^1.3.5"
+  },
+  "overrides": {
+    "axios": "^1.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "playwright-core": "^1.59.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}

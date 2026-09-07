@@ -1,0 +1,8 @@
+node_modules
+dist
+.env
+*.log
+*.pid
+data/*.json
+data/*.tmp
+temp-lostark-discord-spam-bot/
