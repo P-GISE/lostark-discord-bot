@@ -26,7 +26,7 @@
     "axios": "^1.16.0"
   },
   "devDependencies": {
-    "@types/node": "^24.10.1",
+    "@types/node": "^26.6.5",
     "playwright-core": "^1.59.1",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
