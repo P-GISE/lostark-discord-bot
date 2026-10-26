@@ -22,8 +22,8 @@ jobs:
       with:
         node-version: '24'
         cache: npm
-    - name: Compile bot without starting or registering commands
-      run: npm ci --no-audit --no-fund && npm run build
+    - name: Test bounded TTS queue and compile without starting bot
+      run: npm ci --no-audit --no-fund && npm test && npm run build
     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: discord-bot-build-${{ github.sha }}
