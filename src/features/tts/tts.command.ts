@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from "discord.js";
 
 import type { SlashCommand } from "../../types/command";
-import { leaveTtsChannel, queueTts } from "./tts.service";
+import { leaveTtsChannel, queueTts, TtsRequestError } from "./tts.service";
 
 const MAX_TTS_LENGTH = 500;
 
@@ -114,13 +114,21 @@ export const ttsCommand: SlashCommand = {
 
     await interaction.deferReply({ ephemeral: true });
 
-    const chunks = await queueTts({
-      channel: voiceChannel,
-      text,
-      lang,
-      slow,
-    });
-
+    let chunks: number;
+    try {
+      chunks = await queueTts({
+        channel: voiceChannel,
+        userId: interaction.user.id,
+        text,
+        lang,
+        slow,
+      });
+    } catch (error) {
+      await interaction.editReply(error instanceof TtsRequestError
+        ? error.message
+        : "음성을 준비하지 못했습니다. 잠시 후 다시 시도해 주세요.");
+      return;
+    }
     await interaction.editReply(
       `TTS를 대기열에 넣었어요. ${chunks}개 조각으로 재생합니다.`,
     );
