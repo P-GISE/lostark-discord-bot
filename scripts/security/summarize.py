@@ -15,7 +15,7 @@ for scope in ['tree', 'history']:
     findings = json.loads(report.read_text(encoding='utf-8')) or []
     print(f'{scope}: {len(findings)} secret candidates (redacted; no raw report uploaded)')
     for entry in findings:
-        path = str(entry.get('File', '')).replace(str(folder / 'tree'), '<tracked>')
+        path = str(entry.get('File', '')).replace(str(folder / 'inputs/tree'), '<tracked>').replace(str(folder / 'tree'), '<tracked>')
         print(json.dumps({'scope': scope, 'rule': entry.get('RuleID'), 'file': path,
                           'line': entry.get('StartLine')}, ensure_ascii=True))
     failed = failed or statuses[scope] != 0 or bool(findings)
@@ -26,8 +26,14 @@ if not report.exists() or statuses['vuln'] not in [0, 1]:
 else:
     data = json.loads(report.read_text(encoding='utf-8'))
     results = data.get('Results', [])
-    targets = [{'target': item.get('Target'), 'type': item.get('Type'),
-                'high_critical': len(item.get('Vulnerabilities') or [])} for item in results]
+    mapping_path = folder / 'identified-locks.json'
+    mapping = json.loads(mapping_path.read_text(encoding='utf-8')) if mapping_path.exists() else {}
+    targets = []
+    for item in results:
+        identified = item.get('Target', '').replace('\\', '/')
+        original = mapping.get(identified, identified.removeprefix('tree/'))
+        targets.append({'target': original, 'identified_as': identified if identified in mapping else None,
+                        'type': item.get('Type'), 'high_critical': len(item.get('Vulnerabilities') or [])})
     total = sum(item['high_critical'] for item in targets)
     print(json.dumps({'dependency_targets': targets, 'high_critical': total}, ensure_ascii=True))
     if not targets:

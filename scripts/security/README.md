@@ -8,4 +8,6 @@ Trivy는 tracked tree의 지원 manifest/lock에 개발 의존성까지 명시�
 
 raw secret report·diff·author metadata는 artifact나 로그에 올리지 않고 임시 디렉터리에서 삭제한다. 요약은 rule/file/line 및 의존성 대상별 개수만 출력한다. 스캐너 오류·DB 다운로드 실패도 성공으로 처리하지 않는다.
 
+Docker/pip가 실제 설치하는 `requirements.lock`도 포함한다. Trivy가 이름을 인식하도록 임시 scan 입력 안의 별도 경로에 `requirements.txt` 식별 사본을 만들며, 기존 원문의 requirements.txt·lock을 덮어쓰거나 저장소를 수정하지 않는다. 결과에는 원본 lock 경로와 식별 사본 경로를 함께 표시한다. 범위가 느슨한 requirements.txt만 검사하고 실제 pinned lock을 안전으로 간주하지 않는다.
+
 기존 CI의 artifact 발행/배포를 포함한 job은 같은 commit의 reusable security workflow를 needs로 기다린다. 실패/skip이면 publisher가 실행되지 않는다. DB·배포 스크립트 보호 경로를 변경하므로 운영 pull 배포기는 검토대기로 멈출 수 있다. 검토·보존 검증 없이 보호 경로를 비활성화하거나 배포 SHA를 위조하지 않는다. Dependabot은 운영 branch를 향해 주1회 그룹 PR(생태계/경로당 최대2개)을 만들며 자동 병합하지 않는다.
