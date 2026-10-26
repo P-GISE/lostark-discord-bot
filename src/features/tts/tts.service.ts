@@ -200,6 +200,7 @@ export async function queueTts(input: {
   if (session.queue.length + (session.processing ? 1 : 0) + items.length > MAX_GUILD_ITEMS)
     throw new TtsRequestError("서버 음성 대기열이 가득 찼습니다. 잠시 후 다시 시도해 주세요.");
   session.queue.push(...items);
+  clearTimeout(session.idleTimer);
   try {
     await session.ready;
     if (session.closed) throw new Error("TTS session closed");
